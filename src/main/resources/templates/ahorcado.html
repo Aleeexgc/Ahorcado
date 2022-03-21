@@ -1,0 +1,54 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ahorcado</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}" />
+    <script th:src="@{/js/funciones.js}" ></script>
+</head>
+<body th:attr="onload=|prueba('${resultado}')|" >
+
+<!--<script>-->
+<!--    <th:block th:text="|prueba('${resultado}');|" />-->
+<!--    <th:block th:utext="'prueba(\'' + ${resultado} '\');'" />-->
+<!--</script>-->
+
+<div class="cabecera" th:replace="fragments/panelDeControl :: header"></div>
+<!--th:styleappend= "'background-image: url(/img/_.jpg) ;'"-->
+<div class="titulo">
+    <img th:id="${intentos.get(numIntentos)}" th:src="@{/img/FFFFFF-0.0.jpg}">
+</div>
+
+<h1 class="titulo rojo"  th:text="${resultado}"/>
+
+<form id="ahorcado" class="centro" th:action="@{/juego/ahorcado}" method="post">
+
+    <fieldset  th:width="40" class="titulo">
+
+        <legend class="texto">Palabra: </legend>
+
+        <th:block th:each="letra: ${palabra}">
+
+            <span class="texto" th:text="${letra}"></span>
+
+        </th:block>
+
+        <br>
+        <br>
+        <input name="letra" class="cuadrado" type="text" th:value="${letra}"/>
+
+        <br>
+        <br>
+
+        <span class="texto">Nº de intentos: </span>
+        <span class="texto" name="intentos" th:text="${numIntentos}"/>
+
+        <br>
+        <br>
+        <input type="submit" value="Comprobar"/>
+    </fieldset>
+
+</form>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org" lang="es">
+
+	<head>
+		<meta charset="utf-8" />
+		<title th:utext="Login"></title>
+		<link rel="stylesheet" th:href="@{/css/estilos.css}" />
+		<script th:src="@{/js/funciones.js}" ></script>
+	</head>
+	
+	<body>
+		<div class="cabecera" th:replace="fragments/panelDeControl :: header"></div>
+		<h1 class="titulo">Inicio de Sesion</h1>
+		<div class="centro">
+		
+		<form  class="form" th:action="@{/acceso/login}" method="post" th:object="${usuarioLogin}">
+		
+			<label for="usuario">
+				<span class="rojo negrita">*</span>
+				<span class="negrita">Usuario</span>
+		        <input type="text" name="usuario" id="usuario" th:field="*{usuario}"/>
+			</label>
+			
+	  		<span class="rojo negrita" th:text="${#maps.containsKey(listaErrores, 'usuario') ? listaErrores.get('usuario'): ''}"/>
+
+			<br />
+			<br />
+			
+			<label for="clave">
+				<span class="rojo negrita">*</span>
+				<span class="negrita">Contraseña</span>
+		        <input type="password" name="clave" id="clave" th:field="*{clave}"/>
+		        <button type="button" onclick="verClave()"><img th:src="@{/img/ver.png}" width="10" height="10"></button>
+
+			</label>
+	  		
+	  		<span class="rojo negrita" th:text="${#maps.containsKey(listaErrores, 'clave') ? listaErrores.get('clave') : ''}"/>
+
+			<br />
+			<br />
+			<input type="submit" value="Iniciar Sesion" />
+			<button type="button"><a class="enlace" th:href="@{/usuario/alta}">Registrarse</a></button>
+
+		</form>
+		
+		</div>
+
+<!-- Botón o enlace a la función de Alta de usuario -->
+
+	</body>
+	
+</html>

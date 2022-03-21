@@ -1,0 +1,110 @@
+.rojo{
+	
+	color: red;
+	
+}
+
+.cabecera{
+	margin-bottom: 6%;
+	background-color: dimgrey;
+	text-align: center;
+	color: black;
+	
+}
+
+.imagen{
+	display: block;
+	margin: auto;
+	max-width: 64px;
+	max-height: 64px;
+}
+.info{
+	display: inline-block;
+	padding: 5px;
+	border: dashed  ;
+	
+}
+
+.titulo{
+	
+	text-align: center;	
+	margin-bottom: 5%;
+}
+
+.centro{
+
+	display:flex;
+	justify-content: center;
+	
+}
+
+.texto{
+
+	font-size: 200%;
+}
+
+.form{
+	padding: 1%;
+	border: solid ;
+}
+
+.negrita{
+	
+	font-weight: bold;
+	
+}
+
+.enlace{
+	
+	text-decoration: none;
+	color: inherit;
+}
+
+.cuadrado{
+
+	width: 10%;
+}
+#seis {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) -857.15px 0;
+}
+#cinco {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) -714.3px 0;
+}
+#cuatro {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) -571.45px 0;
+}
+#tres {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) -428.6px 0;
+}
+#dos {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) -285.75px 0;)
+}
+#uno {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) -142.9px 0;
+
+
+}
+#cero {
+	width: 142.85px;
+	height: 168px;
+	border: 1px black solid;
+	background: url(/img/images.jpg) 0 0;
+}
