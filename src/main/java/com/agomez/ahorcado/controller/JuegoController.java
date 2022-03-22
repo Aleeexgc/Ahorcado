@@ -47,6 +47,7 @@ public class JuegoController {
 
                 }
             }
+            sol.getSession().invalidate();
         } else{
 
             resultado="Partida en curso";
@@ -82,5 +83,18 @@ public class JuegoController {
         mAV.setViewName("redirect:ahorcado");
 
         return mAV;
+    }
+
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpServletRequest sol) {
+
+        ModelAndView mAV = new ModelAndView();
+
+        sol.getSession().invalidate();
+
+        mAV.setViewName("redirect:ahorcado");
+
+        return mAV;
+
     }
 }

@@ -101,12 +101,20 @@ function deseleccionarCheckboxes(input){
 function prueba(resultado) {
 
     if (resultado === "Usted ha ganado") {
-
         alert("Usted ha ganado");
+
     }
 
     if (resultado === "Usted ha perdido") {
 
         alert("Usted ha perdido");
+    }
+}
+
+function alertCondicional(mensaje) {
+
+    if (mensaje.length > 0) {
+
+        alert(mensaje);
     }
 }

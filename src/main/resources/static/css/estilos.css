@@ -106,5 +106,43 @@
 	width: 142.85px;
 	height: 168px;
 	border: 1px black solid;
-	background: url(/img/images.jpg) 0 0;
+	background: url(/img/images.jpg) 0px 0;
+}
+
+.seis {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) 0px 0;
+}
+.cinco {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) -75px 0;
+}
+.cuatro {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) -150px 0;
+}
+.tres {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) -225px 0;
+}
+.dos {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) -300px 0;)
+}
+.uno {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) -375px 0;
+
+
+}
+.cero {
+	width: 75px;
+	height: 200px;
+	background: url(/img/man.png) -450px 0;
 }
