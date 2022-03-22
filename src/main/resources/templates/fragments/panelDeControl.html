@@ -2,17 +2,25 @@
 <header class="cabecera">
 
     <div class="info">
+        <span class="rojo negrita">IP: </span>
         <span name = "ip" style="font-weight: bold; " th:text="${ip}"/>
         <br>
+        <span class="rojo negrita">Navegador: </span>
         <span name = "User-Agent" style="font-weight: bold;" th:text="${User}"}/>
 
     </div>
 
     <div class="info">
-        <span name = "ip" style="font-weight: bold;" th:text="${ip}"/>
+        <span class="rojo negrita"> Bienvenido: </span>
+        <span name = "user" style="font-weight: bold;" th:text="${nombreUsuario}"/>
         <br>
-        <span name = "User-Agent" style="font-weight: bold;" th:text="${User}"}/>
+        <span name = "mensaje" style="font-weight: bold;" th:text="${bienvenida}"}/>
+        <span class="rojo negrita"> Veces que ha visitado la pagina: </span>
+        <span name = "mensaje" style="font-weight: bold;" th:text="${contador}"}/>
+
 
     </div>
+
+        <a class="left" th:href="@{/acceso/logout}"><img th:src="@{/img/logout.png}"></a>
 
 </header>

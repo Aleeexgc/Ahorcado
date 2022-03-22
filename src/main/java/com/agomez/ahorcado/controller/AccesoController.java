@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,23 +28,46 @@ import java.util.Map;
 @RequestMapping("/acceso")
 public class AccesoController {
 
+    private int contador;
+    private Cookie contadorVisitas = null;
+
     @GetMapping("login")
-    public ModelAndView devuelveFormularioLogin(HttpServletRequest sol) throws UnknownHostException {
+    public ModelAndView devuelveFormularioLogin(HttpServletRequest sol, HttpServletResponse res) throws UnknownHostException {
 
         ModelAndView mAV = new ModelAndView();
 
         UsuarioLoginDTO usuarioLogin = new UsuarioLoginDTO();
         Map<String, String> listaErrores = new HashMap<String, String>();
 
-        InetAddress addr = InetAddress.getLocalHost();
+        if (sol.getCookies() == null) {
 
-        String ip = addr.getHostAddress();
-        String name = addr.getHostName();
-        mAV.addObject("ip",ip);
-        mAV.addObject("name",name);
+            contador = 1;
+
+            contadorVisitas = new Cookie("_contador", String.valueOf(contador));
+
+            res.addCookie(contadorVisitas);
+
+            mAV.addObject("bienvenida","Bienvenido por primera vez");
+
+        } else {
+
+
+            contador = Integer.parseInt(sol.getCookies()[0].getValue());
+
+            contador++;
+            contadorVisitas = new Cookie("_contador", String.valueOf(contador));
+
+            res.addCookie(contadorVisitas);
+
+            mAV.addObject("bienvenida","Bienvenido de nuevo");
+
+        }
+        mAV.addObject("ip",sol.getLocalAddr());
         mAV.addObject("User",sol.getHeader("User-Agent"));
+        mAV.addObject("nombreUsuario",usuarioLogin.getUsuario());
         mAV.addObject("usuarioLogin",usuarioLogin);
         mAV.addObject("listaErrores",listaErrores);
+        mAV.addObject("contador",contadorVisitas.getValue());
 
         mAV.setViewName("login");
 
@@ -57,10 +82,6 @@ public class AccesoController {
         Map<String, String> listaErrores = new HashMap<String, String>();
 
         List<UsuarioLoginDTO> lista = recuperaUsuario();
-        InetAddress addr = InetAddress.getLocalHost();
-
-        String ip = addr.getHostAddress();
-        String name = addr.getHostName();
 
         for (int i = 0; i < lista.size(); i++) {
 
@@ -87,16 +108,30 @@ public class AccesoController {
 
 
         }
-//        mAV.addObject("User",sol.getHeader("User-Agent"));
-//        mAV.addObject("usuarioLogin",usuarioLogin);
-//        mAV.addObject("ip",ip);
-//        mAV.addObject("name",name);
+
+        System.out.println(usuarioLogin.getUsuario());
+        sol.getSession().setAttribute("contadorVisitas",contadorVisitas);
+        sol.getSession().setAttribute("usuarioLogin",usuarioLogin);
+
         mAV.addObject("usuarioLogin",usuarioLogin);
         mAV.addObject("listaErrores",listaErrores);
 
         //		mAV.setViewName("");
 
         return mAV;
+    }
+
+    @GetMapping("logout")
+    public ModelAndView logout(HttpServletRequest sol){
+
+        ModelAndView mAV = new ModelAndView();
+
+        sol.getSession().invalidate();
+
+        mAV.setViewName("redirect:login");
+
+        return mAV;
+
     }
 
     public List<UsuarioLoginDTO> recuperaUsuario() {
