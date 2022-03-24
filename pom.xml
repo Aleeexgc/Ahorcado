@@ -59,6 +59,7 @@
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
+            <!--Hecho por Alejandro Gomez-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

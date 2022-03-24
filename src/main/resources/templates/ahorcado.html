@@ -7,16 +7,10 @@
     <link rel="stylesheet" th:href="@{/css/estilos.css}" />
     <script th:src="@{/js/funciones.js}" ></script>
 </head>
-<!--body th:attr="onload=|prueba('${resultado}');|" -->
 <body th:attr="onload=|prueba('${resultado}');|">
 
-<!--<script>-->
-<!--    <th:block th:text="|prueba('${resultado}');|" />-->
-<!--    <th:block th:utext="'prueba(\'' + ${resultado} '\');'" />-->
-<!--</script>-->
-
 <div class="cabecera" th:replace="fragments/panelDeControl :: header"></div>
-<!--th:styleappend= "'background-image: url(/img/_.jpg) ;'"-->
+
 <div class="titulo">
     <img th:class="${intentos.get(numIntentos)}" th:src="@{/img/FFFFFF-0.0.jpg}">
 </div>

@@ -20,7 +20,7 @@ public class Configuracion {
 //	        messageSource.setDefaultEncoding("UTF-8");
 //	        return messageSource;
 //	    }
-
+//Hecho por Alejandro Gomez
 //	    @Bean
 //	    public LocalValidatorFactoryBean getValidator() {
 //	        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();

@@ -10,7 +10,7 @@ public class UsuarioLoginDTO {
 	
 	public UsuarioLoginDTO() {
 
-		this.usuario = "";
+//		this.usuario = "";
 	}
 
 	
