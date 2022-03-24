@@ -4,4 +4,4 @@ Ruta princial "/acceso/login/" sino posible fallo
 Para iniciar sesion :
 
   -Usuario: root
-  -Comtraseña: root
+  -Contraseña: root
