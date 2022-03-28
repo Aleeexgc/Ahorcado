@@ -53,9 +53,7 @@ public class AccesoController {
 
             try {
                 contador = Integer.parseInt(buscacookies("_contador", sol.getCookies()).getValue());
-                System.out.println(contador);
             } catch (Exception e){
-                System.out.println(contador);
                 e.printStackTrace();
             }
 
@@ -96,7 +94,6 @@ public class AccesoController {
 
                 if (usuarioLogin.getClave().equals(listaUsuarios.get(i).getClave())) {
 
-//                    sol.getSession().invalidate();
                     sol.getSession().setAttribute("usuarioLogin",usuarioLogin);
 
                     mAV.setViewName("redirect:/juego/ahorcado");
