@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,125 +22,99 @@ import java.util.Map;
 public class JuegoController {
 
     private int contador;
+    private Cookie contadorVisitas;
 
 
     @GetMapping("/ahorcado")
-    public ModelAndView juegoAhorcado(HttpServletRequest sol, HttpServletResponse res) {
+    public ModelAndView juegoAhorcado(HttpSession sesion, HttpServletResponse res, HttpServletRequest sol) {
 
-        Cookie contadorVisitas;
         ModelAndView mAV = new ModelAndView();
         UsuarioLoginDTO usuarioLogin = new UsuarioLoginDTO();
 
-        if (sol.getSession().getAttribute("usuarioLogin") == null) {
+        if (sesion.getAttribute("usuarioLogin") == null) {
+
             mAV.setViewName("redirect:/acceso/login");
-            return mAV;
-        } else {
-            usuarioLogin = (UsuarioLoginDTO) sol.getSession().getAttribute("usuarioLogin");
+            sesion.invalidate();
+        } else { // Si
 
-        }
-        Palabra palabra;
+            usuarioLogin = (UsuarioLoginDTO) sesion.getAttribute("usuarioLogin");
 
+            contadorVisitas = WebUtils.getCookie(sol, "_contador");
 
-//        if (sol.getSession().getAttribute("usuarioLogin") != null) {
-//
-//            usuarioLogin = (UsuarioLoginDTO) sol.getSession().getAttribute("usuarioLogin");
-//        }
+            Palabra palabra;
 
-        if (buscacookies("_contador", sol.getCookies()) == null) {
-
-            contador = 1;
-
-            contadorVisitas = new Cookie("_contador", String.valueOf(contador));
-            contadorVisitas.setPath("/");
-            res.addCookie(contadorVisitas);
-
-            mAV.addObject("bienvenida","Bienvenido por primera vez");
-
-        } else {
-
-            try {
-                contador = Integer.parseInt(buscacookies("_contador", sol.getCookies()).getValue());
-            } catch (Exception e){
-
-                e.printStackTrace();
-            }
-
+            contador = Integer.parseInt(contadorVisitas.getValue());
 
             contador++;
-            contadorVisitas = buscacookies("_contador", sol.getCookies());
+            contadorVisitas = new Cookie("_contador", String.valueOf(contador));
 
-            contadorVisitas.setValue(contador+"");
             contadorVisitas.setPath("/");
             res.addCookie(contadorVisitas);
 
-            mAV.addObject("bienvenida","Bienvenido de nuevo");
+            mAV.addObject("bienvenida", "Bienvenido de nuevo");
 
-        }
+            if (sesion.getAttribute("palabra") == null) {
 
-        if (sol.getSession().getAttribute("palabra") == null) {
+                palabra = new Palabra();
 
-            palabra = new Palabra();
-
-            sol.getSession().setAttribute("palabra", palabra);
-        } else {
-
-            palabra = (Palabra) sol.getSession().getAttribute("palabra");
-        }
-
-        String resultado = "";
-
-        if (palabra.compruebaGanador() || palabra.getNumIntentos() == 0) {
-
-            if (palabra.compruebaGanador()) {
-
-                resultado = "Usted ha ganado";
-
+                sesion.setAttribute("palabra", palabra);
             } else {
 
-                if (palabra.getNumIntentos() == 0) {
-
-                    resultado = "Usted ha perdido";
-
-                }
+                palabra = (Palabra) sesion.getAttribute("palabra");
             }
-            sol.getSession().setAttribute("palabra", new Palabra());
-        } else {
 
-            resultado = "Partida en curso";
+            String resultado = "";
+
+            if (palabra.compruebaGanador() || palabra.getNumIntentos() == 0) {
+
+                if (palabra.compruebaGanador()) {
+
+                    resultado = "Usted ha ganado";
+
+                } else {
+
+                    if (palabra.getNumIntentos() == 0) {
+
+                        resultado = "Usted ha perdido";
+
+                    }
+                }
+                sesion.setAttribute("palabra", new Palabra());
+            } else {
+
+                resultado = "Partida en curso";
+            }
+
+            mAV.addObject("nombreUsuario", usuarioLogin.getUsuario());
+            mAV.addObject("ip", sol.getLocalAddr());
+            mAV.addObject("User", sol.getHeader("User-Agent"));
+            mAV.addObject("numIntentos", palabra.getNumIntentos());
+            mAV.addObject("intentos", palabra.getIntentos());
+            mAV.addObject("palabra", palabra.getPalabraT());
+            mAV.addObject("resultado", resultado);
+            mAV.addObject("contador", contadorVisitas.getValue());
+            mAV.setViewName("ahorcado");
         }
-
-        mAV.addObject("nombreUsuario", usuarioLogin.getUsuario());
-        mAV.addObject("ip", sol.getLocalAddr());
-        mAV.addObject("User", sol.getHeader("User-Agent"));
-//            mAV.addObject("usuarioLogin", usuarioLogin);
-        mAV.addObject("numIntentos", palabra.getNumIntentos());
-        mAV.addObject("intentos", palabra.getIntentos());
-        mAV.addObject("palabra", palabra.getPalabraT());
-        mAV.addObject("resultado", resultado);
-        mAV.addObject("contador",contadorVisitas.getValue());
-        mAV.setViewName("ahorcado");
-
         return mAV;
     }
 
 
     @PostMapping("ahorcado")
-    public ModelAndView compruebaJuego(HttpServletRequest sol, String letra) {
+    public ModelAndView compruebaJuego(HttpSession sesion, String letra) {
 
         ModelAndView mAV = new ModelAndView();
         Palabra palabra;
-        palabra = (Palabra) sol.getSession().getAttribute("palabra");
+        palabra = (Palabra) sesion.getAttribute("palabra");
 
         palabra.compruebaLetra(letra);
 
-//        sol.getSession().setAttribute("cookie",contadorVisitas);
-        sol.getSession().setAttribute("palabra",palabra);
+        sesion.setAttribute("palabra",palabra);
 
-//        mAV.addObject("palabra",palabra.getPalabraT());
         mAV.setViewName("redirect:ahorcado");
 
         return mAV;
     }
+
 
     // Hecho por Alejandro Gomez
     private Cookie buscacookies(String nombre, Cookie[] cookies){

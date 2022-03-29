@@ -32,14 +32,14 @@ public class AccesoController {
     private Cookie contadorVisitas = null;
 
     @GetMapping("login")
-    public ModelAndView devuelveFormularioLogin(HttpServletRequest sol, HttpServletResponse res){
+    public ModelAndView devuelveFormularioLogin(HttpServletRequest sol, HttpServletResponse res,HttpSession sesion){
 
         ModelAndView mAV = new ModelAndView();
 
         UsuarioLoginDTO usuarioLogin = new UsuarioLoginDTO();
         Map<String, String> listaErrores = new HashMap<String, String>();
 
-        if (buscacookies("_contador", sol.getCookies()) == null || contadorVisitas == null) {
+        if (buscacookies("_contador", sol.getCookies()) == null || contadorVisitas == null)  {
 
             contador = 1;
 
@@ -47,23 +47,19 @@ public class AccesoController {
             contadorVisitas.setPath("/");
             res.addCookie(contadorVisitas);
 
-            mAV.addObject("bienvenida","Bienvenido por primera vez");
+            mAV.addObject("bienvenida", "Bienvenido por primera vez");
 
         } else {
 
-            try {
-                contador = Integer.parseInt(buscacookies("_contador", sol.getCookies()).getValue());
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
+            contador = Integer.parseInt(contadorVisitas.getValue());
             contador++;
-            contadorVisitas = buscacookies("_contador", sol.getCookies());
-            contadorVisitas.setValue(contador+"");
+            contadorVisitas =new Cookie("_contador", String.valueOf(contador));
+
             contadorVisitas.setPath("/");
+
             res.addCookie(contadorVisitas);
 
-            mAV.addObject("bienvenida","Bienvenido de nuevo");
+            mAV.addObject("bienvenida", "Bienvenido de nuevo");
 
         }
 
@@ -80,7 +76,7 @@ public class AccesoController {
     }
 
     @PostMapping("login")
-    public ModelAndView recibeCredencialesLogin(UsuarioLoginDTO usuarioLogin, HttpServletRequest sol,HttpServletResponse res) throws UnknownHostException {
+    public ModelAndView recibeCredencialesLogin(UsuarioLoginDTO usuarioLogin,HttpServletResponse res,HttpSession sesion){
 
         ModelAndView mAV = new ModelAndView();
 
@@ -88,23 +84,24 @@ public class AccesoController {
 
         List<UsuarioLoginDTO> listaUsuarios = recuperaUsuario();
 
-        for (int i = 0; i < listaUsuarios.size(); i++) {
 
-            if (usuarioLogin.getUsuario().equals(listaUsuarios.get(i).getUsuario())) {
+        for (UsuarioLoginDTO listaUsuario : listaUsuarios) {
 
-                if (usuarioLogin.getClave().equals(listaUsuarios.get(i).getClave())) {
+            if (usuarioLogin.getUsuario().equals(listaUsuario.getUsuario())) {
 
-                    sol.getSession().setAttribute("usuarioLogin",usuarioLogin);
+                if (usuarioLogin.getClave().equals(listaUsuario.getClave())) {
+
+
+                    sesion.setAttribute("usuarioLogin", usuarioLogin);
 
                     mAV.setViewName("redirect:/juego/ahorcado");
-                    return mAV;
                 } else {
 
                     listaErrores.put("clave", "Contraseña incorrecta");
 
                     mAV.setViewName("login");
-                    mAV.addObject("usuarioLogin",usuarioLogin);
-                    mAV.addObject("listaErrores",listaErrores);
+                    mAV.addObject("usuarioLogin", usuarioLogin);
+                    mAV.addObject("listaErrores", listaErrores);
 
                 }
             } else {
@@ -112,8 +109,8 @@ public class AccesoController {
                 listaErrores.put("usuario", "Usuario incorrecto");
 
                 mAV.setViewName("login");
-                mAV.addObject("usuarioLogin",usuarioLogin);
-                mAV.addObject("listaErrores",listaErrores);
+                mAV.addObject("usuarioLogin", usuarioLogin);
+                mAV.addObject("listaErrores", listaErrores);
 
             }
 
@@ -121,13 +118,12 @@ public class AccesoController {
 
         return mAV;
     }
-
     @GetMapping("logout")
-    public ModelAndView logout(HttpServletRequest sol){
+    public ModelAndView logout(HttpSession sesion){
 
         ModelAndView mAV = new ModelAndView();
 
-        sol.getSession().invalidate();
+        sesion.invalidate();
 
         mAV.setViewName("redirect:login");
 
