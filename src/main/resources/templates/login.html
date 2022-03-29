@@ -22,8 +22,6 @@
 				<span class="negrita">Usuario</span>
 		        <input type="text" name="usuario" id="usuario" th:field="*{usuario}"/>
 			</label>
-			
-	  		<span class="rojo negrita" th:text="${#maps.containsKey(listaErrores, 'usuario') ? listaErrores.get('usuario'): ''}"/>
 
 			<br />
 			<br />
@@ -35,14 +33,13 @@
 		        <button type="button" onclick="verClave()"><img th:src="@{/img/ver.png}" width="10" height="10"></button>
 
 			</label>
-	  		
+
+			<br/>
 	  		<span class="rojo negrita" th:text="${#maps.containsKey(listaErrores, 'clave') ? listaErrores.get('clave') : ''}"/>
 
 			<br />
 			<br />
 			<input type="submit" value="Iniciar Sesion" />
-			<button type="button"><a class="enlace" th:href="@{/usuario/alta}">Registrarse</a></button>
-
 		</form>
 		
 		</div>

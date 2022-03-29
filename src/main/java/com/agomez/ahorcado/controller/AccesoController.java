@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ public class AccesoController {
     }
 
     @PostMapping("login")
-    public ModelAndView recibeCredencialesLogin(UsuarioLoginDTO usuarioLogin,HttpServletResponse res,HttpSession sesion){
+    public ModelAndView recibeCredencialesLogin(UsuarioLoginDTO usuarioLogin,HttpServletResponse res,HttpSession sesion,HttpServletRequest sol){
 
         ModelAndView mAV = new ModelAndView();
 
@@ -84,44 +85,49 @@ public class AccesoController {
 
         List<UsuarioLoginDTO> listaUsuarios = recuperaUsuario();
 
+        contador = Integer.parseInt(contadorVisitas.getValue());
+        contador++;
+        contadorVisitas =new Cookie("_contador", String.valueOf(contador));
+
+        contadorVisitas.setPath("/");
+
+        res.addCookie(contadorVisitas);
+
 
         for (UsuarioLoginDTO listaUsuario : listaUsuarios) {
 
-            if (usuarioLogin.getUsuario().equals(listaUsuario.getUsuario())) {
+            if (usuarioLogin.getUsuario().equals(listaUsuario.getUsuario()) || usuarioLogin.getClave().equals(listaUsuario.getClave())) {
 
-                if (usuarioLogin.getClave().equals(listaUsuario.getClave())) {
+                sesion.setAttribute("usuarioLogin", usuarioLogin);
 
-
-                    sesion.setAttribute("usuarioLogin", usuarioLogin);
-
-                    mAV.setViewName("redirect:/juego/ahorcado");
-                } else {
-
-                    listaErrores.put("clave", "Contraseña incorrecta");
-
-                    mAV.setViewName("login");
-                    mAV.addObject("usuarioLogin", usuarioLogin);
-                    mAV.addObject("listaErrores", listaErrores);
-
-                }
+                mAV.setViewName("redirect:/juego/ahorcado");
             } else {
 
-                listaErrores.put("usuario", "Usuario incorrecto");
+                listaErrores.put("clave", "Usuario o contraseña incorrecto");
 
                 mAV.setViewName("login");
-                mAV.addObject("usuarioLogin", usuarioLogin);
-                mAV.addObject("listaErrores", listaErrores);
+                mAV.addObject("bienvenida", "Bienvenido de nuevo");
+
+                mAV.addObject("ip",sol.getLocalAddr());
+                mAV.addObject("User",sol.getHeader("User-Agent"));
+                mAV.addObject("nombreUsuario","");
+                mAV.addObject("usuarioLogin",usuarioLogin);
+                mAV.addObject("listaErrores",listaErrores);
+                mAV.addObject("contador",contadorVisitas.getValue());
 
             }
 
+
         }
+
 
         return mAV;
     }
     @GetMapping("logout")
-    public ModelAndView logout(HttpSession sesion){
+    public ModelAndView logout(HttpSession sesion,HttpServletRequest sol){
 
         ModelAndView mAV = new ModelAndView();
+        contadorVisitas = WebUtils.getCookie(sol, "_contador");
 
         sesion.invalidate();
 

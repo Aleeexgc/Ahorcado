@@ -80,6 +80,7 @@ public class JuegoController {
                     }
                 }
                 sesion.setAttribute("palabra", new Palabra());
+
             } else {
 
                 resultado = "Partida en curso";
@@ -106,9 +107,26 @@ public class JuegoController {
         Palabra palabra;
         palabra = (Palabra) sesion.getAttribute("palabra");
 
+        if (letra.equals("")){
+            letra = "0";
+        }
+
         palabra.compruebaLetra(letra);
 
         sesion.setAttribute("palabra",palabra);
+
+        mAV.setViewName("redirect:ahorcado");
+
+        return mAV;
+    }
+
+
+    @GetMapping("nueva")
+    public ModelAndView nuevaPartida(HttpSession sesion) {
+
+        ModelAndView mAV = new ModelAndView();
+
+        sesion.setAttribute("palabra",new Palabra());
 
         mAV.setViewName("redirect:ahorcado");
 
